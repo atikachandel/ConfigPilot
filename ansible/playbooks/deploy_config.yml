@@ -1,0 +1,19 @@
+---
+# Deploys a single rendered config to its target device group.
+#
+# Required extra-vars:
+#   target_env       - dev | staging | prod (selects the inventory group; NOTE:
+#                       named target_env, not `environment`, because the latter
+#                       is a reserved Ansible variable name used for task-level
+#                       environment variables)
+#   device_name      - matches the device_name used at config-generation time
+#   src_config_file  - absolute path to the rendered config on disk
+# Optional:
+#   dry_run          - true to show the diff without writing (default: false)
+- name: Deploy ConfigPilot generated configuration
+  hosts: "{{ target_env }}"
+  gather_facts: false
+  vars:
+    dry_run: "{{ dry_run | default(false) }}"
+  roles:
+    - deploy_config

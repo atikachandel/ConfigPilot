@@ -1,0 +1,12 @@
+spanning_tree_mode: rapid-pvst
+vlans:
+  - id: 10
+    name: staging-servers
+  - id: 20
+    name: staging-users
+interfaces:
+  - name: GigabitEthernet1/0/1
+    description: "access-staging-servers"
+    mode: access
+    vlan: 10
+    enabled: true

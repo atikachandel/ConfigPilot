@@ -1,0 +1,16 @@
+version: "3.9"
+
+services:
+  configpilot-api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount so generated configs / mock device state persist across restarts
+      # and are visible on the host while developing.
+      - ./generated_configs:/configpilot/generated_configs
+      - ./mock_devices:/configpilot/mock_devices
+    environment:
+      - PYTHONUNBUFFERED=1

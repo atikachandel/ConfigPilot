@@ -1,0 +1,2 @@
+environment: prod
+syslog_server: "10.30.0.9"

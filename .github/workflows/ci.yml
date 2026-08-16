@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Lint with flake8
+        run: flake8 app tests --max-line-length=120 --extend-ignore=E203
+
+      - name: Check formatting with black
+        run: black --check app tests
+
+      - name: Run unit + API tests
+        run: pytest tests/ -v
+
+      - name: Lint Ansible playbook
+        run: ansible-playbook ansible/playbooks/deploy_config.yml --syntax-check -i ansible/inventory/hosts.yml
+
+      - name: End-to-end smoke test (generate -> validate -> deploy dry-run)
+        run: |
+          mkdir -p generated_configs
+          nohup uvicorn app.main:app --host 127.0.0.1 --port 8000 &
+          sleep 3
+          curl -sf http://127.0.0.1:8000/health
+
+          RESP=$(curl -sf -X POST http://127.0.0.1:8000/configs/generate \
+            -H "Content-Type: application/json" \
+            -d '{"environment":"dev","device_name":"ci-router-01","device_role":"router"}')
+          echo "$RESP"
+          CONFIG_ID=$(echo "$RESP" | python -c "import sys,json;print(json.load(sys.stdin)['config_id'])")
+
+          curl -sf -X POST http://127.0.0.1:8000/configs/validate \
+            -H "Content-Type: application/json" -d "{\"config_id\":\"$CONFIG_ID\"}"
+
+          curl -sf -X POST http://127.0.0.1:8000/configs/deploy \
+            -H "Content-Type: application/json" \
+            -d "{\"config_id\":\"$CONFIG_ID\",\"environment\":\"dev\",\"dry_run\":true}"
+
+  build-docker-image:
+    runs-on: ubuntu-latest
+    needs: lint-and-test
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Build image
+        run: docker build -f docker/Dockerfile -t configpilot:ci .

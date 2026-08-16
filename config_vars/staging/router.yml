@@ -1,0 +1,15 @@
+interfaces:
+  - name: GigabitEthernet0/0
+    description: "uplink-staging"
+    ip: 10.20.1.1
+    netmask: 255.255.255.0
+    enabled: true
+  - name: GigabitEthernet0/1
+    description: "lan-staging"
+    ip: 10.20.2.1
+    netmask: 255.255.255.0
+    enabled: true
+routing:
+  protocol: ospf
+  networks:
+    - "10.20.0.0/16 area 0"

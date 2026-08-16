@@ -1,0 +1,24 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# Runtime-generated artifacts — these are created by the API/Ansible at
+# runtime and shouldn't be committed. .gitkeep files preserve the folders.
+generated_configs/*
+!generated_configs/.gitkeep
+mock_devices/dev/*
+mock_devices/staging/*
+mock_devices/prod/*
+!mock_devices/**/.gitkeep
+
+.venv/
+venv/
+env/
+
+.vscode/
+.idea/
+
+.DS_Store
+*.log

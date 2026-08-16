@@ -1,0 +1,10 @@
+zones:
+  - name: inside
+    interfaces: ["eth0"]
+  - name: outside
+    interfaces: ["eth1"]
+rules:
+  - action: allow
+    source: 10.10.0.0/16
+    destination: any
+    service: https

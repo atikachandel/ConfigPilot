@@ -1,0 +1,2 @@
+environment: dev
+syslog_server: "10.10.0.9"

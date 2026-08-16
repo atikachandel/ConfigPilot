@@ -1,0 +1,4 @@
+# Variables shared by every environment and device role.
+snmp_community: "configpilot-ro"
+ntp_servers:
+  - "pool.ntp.org"

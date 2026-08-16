@@ -1,0 +1,15 @@
+interfaces:
+  - name: GigabitEthernet0/0
+    description: "uplink-dev"
+    ip: 10.10.1.1
+    netmask: 255.255.255.0
+    enabled: true
+  - name: GigabitEthernet0/1
+    description: "lan-dev"
+    ip: 10.10.2.1
+    netmask: 255.255.255.0
+    enabled: true
+routing:
+  protocol: ospf
+  networks:
+    - "10.10.0.0/16 area 0"

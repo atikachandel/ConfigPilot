@@ -1,0 +1,37 @@
+---
+- name: Ensure mock device directory exists
+  ansible.builtin.file:
+    path: "{{ mock_device_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Fail fast if the source config file is missing
+  ansible.builtin.stat:
+    path: "{{ src_config_file }}"
+  register: src_stat
+
+- name: Abort when rendered config does not exist
+  ansible.builtin.fail:
+    msg: "Source config {{ src_config_file }} not found; run /configs/generate first"
+  when: not src_stat.stat.exists
+
+- name: Show diff between current and incoming config (dry-run visibility)
+  ansible.builtin.command:
+    cmd: "diff -u {{ mock_device_dir }}/{{ device_name }}.conf {{ src_config_file }}"
+  register: config_diff
+  changed_when: false
+  failed_when: false
+  when: not (dry_run | default(false))
+
+- name: Deploy rendered config to device (write running-config)
+  ansible.builtin.copy:
+    src: "{{ src_config_file }}"
+    dest: "{{ mock_device_dir }}/{{ device_name }}.conf"
+    mode: "0644"
+  when: not (dry_run | default(false))
+  register: deploy_result
+
+- name: Report dry-run result
+  ansible.builtin.debug:
+    msg: "DRY RUN: would deploy {{ src_config_file }} -> {{ mock_device_dir }}/{{ device_name }}.conf"
+  when: dry_run | default(false)
