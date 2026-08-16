@@ -3,6 +3,29 @@ __pycache__/
 *.egg-info/
 .pytest_cache/
 .mypy_cache/
+*.pyo
+*.pyd
+*.sqlite3
+*.db
+
+# Local virtual environments and tool caches
+.venv/
+venv/
+env/
+.env
+.env.*
+*.env
+
+# Credential / secret style files
+*.pem
+*.key
+*.crt
+*.cer
+*.pfx
+*.p12
+*.secret
+*.token
+*.bak
 
 # Runtime-generated artifacts — these are created by the API/Ansible at
 # runtime and shouldn't be committed. .gitkeep files preserve the folders.
@@ -12,10 +35,6 @@ mock_devices/dev/*
 mock_devices/staging/*
 mock_devices/prod/*
 !mock_devices/**/.gitkeep
-
-.venv/
-venv/
-env/
 
 .vscode/
 .idea/
