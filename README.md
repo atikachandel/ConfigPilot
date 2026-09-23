@@ -5,8 +5,7 @@ device configs from templates + YAML, validate them, and deploy them through
 Ansible — all behind a REST API.
 
 Built to back up the "reduces repetitive provisioning and configuration
-errors across development, staging, and production" line on a resume with
-actual working code, not just a description.
+errors across development, staging, and production".
 
 ## Why it exists
 
